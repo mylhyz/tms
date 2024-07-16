@@ -194,8 +194,8 @@ tms_do_install() {
 
     SOURCE_STR="\\nexport TMS_DIR=\"${PROFILE_INSTALL_DIR}\"\\n[ -s \"\$TMS_DIR/tms.sh\" ] && \\. \"\$TMS_DIR/tms.sh\"  # This loads tms\\n"
 
-    # shellcheck disable=SC2016
-    COMPLETION_STR='[ -s "$TMS_DIR/bash_completion" ] && \. "$TMS_DIR/bash_completion"  # This loads tms bash_completion\n'
+    # # shellcheck disable=SC2016
+    # COMPLETION_STR='[ -s "$TMS_DIR/bash_completion" ] && \. "$TMS_DIR/bash_completion"  # This loads tms bash_completion\n'
     BASH_OR_ZSH=false
 
     if [ -z "${TMS_PROFILE-}" ] ; then
@@ -219,18 +219,18 @@ tms_do_install() {
       else
         tms_echo "=> tms source string already in ${TMS_PROFILE}"
       fi
-      # shellcheck disable=SC2016
-      if ${BASH_OR_ZSH} && ! command grep -qc '$NVM_DIR/bash_completion' "$TMS_PROFILE"; then
-        tms_echo "=> Appending bash_completion source string to $TMS_PROFILE"
-        command printf "$COMPLETION_STR" >> "$TMS_PROFILE"
-      else
-        tms_echo "=> bash_completion source string already in ${TMS_PROFILE}"
-      fi
+      # # shellcheck disable=SC2016
+      # if ${BASH_OR_ZSH} && ! command grep -qc '$NVM_DIR/bash_completion' "$TMS_PROFILE"; then
+      #   tms_echo "=> Appending bash_completion source string to $TMS_PROFILE"
+      #   command printf "$COMPLETION_STR" >> "$TMS_PROFILE"
+      # else
+      #   tms_echo "=> bash_completion source string already in ${TMS_PROFILE}"
+      # fi
     fi
-    if ${BASH_OR_ZSH} && [ -z "${TMS_PROFILE-}" ] ; then
-      tms_echo "=> Please also append the following lines to the if you are using bash/zsh shell:"
-      command printf "${COMPLETION_STR}"
-    fi
+    # if ${BASH_OR_ZSH} && [ -z "${TMS_PROFILE-}" ] ; then
+    #   tms_echo "=> Please also append the following lines to the if you are using bash/zsh shell:"
+    #   command printf "${COMPLETION_STR}"
+    # fi
 
     # Source tms
     # shellcheck source=/dev/null
@@ -240,9 +240,9 @@ tms_do_install() {
 
     tms_echo "=> Close and reopen your terminal to start using tms or run the following to use it now:"
     command printf "${SOURCE_STR}"
-    if ${BASH_OR_ZSH} ; then
-      command printf "${COMPLETION_STR}"
-    fi
+    # if ${BASH_OR_ZSH} ; then
+    #   command printf "${COMPLETION_STR}"
+    # fi
 }
 
 tms_reset() {
