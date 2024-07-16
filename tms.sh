@@ -5,18 +5,11 @@ tms_echo() {
 }
 
 tms() {
-    # 获取run脚本的绝对路径
-    RUN_SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-    # 假设main.py位于run脚本的同级目录下的bin文件夹内
-    MAIN_PY_PATH="$(dirname "$RUN_SCRIPT_PATH")/tms.py"
-
-    # 检查main.py是否存在
-    if [ -f "$MAIN_PY_PATH" ]; then
-        # 使用python执行main.py
-        python "$MAIN_PY_PATH"
+    TMS_PY_PATH="$HOME/.tms/tms.py"
+    if [ -f "$TMS_PY_PATH" ]; then
+        python3 "$TMS_PY_PATH" "$@"
     else
-        echo "Error: main.py does not exist at path: $MAIN_PY_PATH"
+        tms_echo "Error: tms.py does not exist at path: $TMS_PY_PATH"
         exit 1
     fi
 }
