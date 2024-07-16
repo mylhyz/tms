@@ -21,8 +21,8 @@ tms_default_install_dir() {
 }
 
 tms_install_dir() {
-  if [ -n "$tms_DIR" ]; then
-    printf %s "${tms_DIR}"
+  if [ -n "$TMS_DIR" ]; then
+    printf %s "${TMS_DIR}"
   else
     tms_default_install_dir
   fi
@@ -102,17 +102,17 @@ install_tms_from_git() {
   # 检查本地目录是否存在
   local INSTALL_DIR
   INSTALL_DIR="$(tms_install_dir)"
-  local tms_VERSION
-  tms_VERSION="${tms_INSTALL_VERSION:-$(tms_latest_version)}"
+  local TMS_VERSION
+  TMS_VERSION="${TMS_INSTALL_VERSION:-$(tms_latest_version)}"
 
   local fetch_error
   if [ -d "$INSTALL_DIR/.git" ]; then
     # Updating repo
     tms_echo "=> tms is already installed in $INSTALL_DIR, trying to update using git"
     command printf '\r=> '
-    fetch_error="Failed to update tms with $tms_VERSION, run 'git fetch' in $INSTALL_DIR yourself."
+    fetch_error="Failed to update tms with $TMS_VERSION, run 'git fetch' in $INSTALL_DIR yourself."
   else
-    fetch_error="Failed to fetch origin with $tms_VERSION. Please report this!"
+    fetch_error="Failed to fetch origin with $TMS_VERSION. Please report this!"
     tms_echo "=> Downloading tms from git to '$INSTALL_DIR'"
     command printf '\r=> '
     mkdir -p "${INSTALL_DIR}"
@@ -138,7 +138,7 @@ install_tms_from_git() {
 
   # 检出远程仓库到本地目录
   command git -c advice.detachedHead=false --git-dir="$INSTALL_DIR"/.git --work-tree="$INSTALL_DIR" checkout -f --quiet main || {
-    tms_echo >&2 "Failed to checkout the given version $tms_VERSION. Please report this!"
+    tms_echo >&2 "Failed to checkout the given version $TMS_VERSION. Please report this!"
     exit 2
   }
   if [ -n "$(command git --git-dir="$INSTALL_DIR"/.git --work-tree="$INSTALL_DIR" show-ref refs/heads/main)" ]; then
@@ -163,16 +163,16 @@ install_tms_from_git() {
 
 tms_do_install() {
     # 创建本地路径
-    if [ -n "${tms_DIR-}" ] && ! [ -d "${tms_DIR}" ]; then
-        if [ -e "${tms_DIR}" ]; then
-            tms_echo >&2 "File \"${tms_DIR}\" has the same name as installation directory."
+    if [ -n "${TMS_DIR-}" ] && ! [ -d "${TMS_DIR}" ]; then
+        if [ -e "${TMS_DIR}" ]; then
+            tms_echo >&2 "File \"${TMS_DIR}\" has the same name as installation directory."
             exit 1
         fi
 
-        if [ "${tms_DIR}" = "$(tms_default_install_dir)" ]; then
-            mkdir "${tms_DIR}"
+        if [ "${TMS_DIR}" = "$(tms_default_install_dir)" ]; then
+            mkdir "${TMS_DIR}"
         else
-            tms_echo >&2 "You have \$tms_DIR set to \"${tms_DIR}\", but that directory does not exist. Check your profile files and environment."
+            tms_echo >&2 "You have \$TMS_DIR set to \"${TMS_DIR}\", but that directory does not exist. Check your profile files and environment."
             exit 1
         fi
     fi
@@ -187,21 +187,21 @@ tms_do_install() {
 
     tms_echo
 
-    local tms_PROFILE
-    tms_PROFILE="$(tms_detect_profile)"
+    local TMS_PROFILE
+    TMS_PROFILE="$(tms_detect_profile)"
     local PROFILE_INSTALL_DIR
     PROFILE_INSTALL_DIR="$(tms_install_dir | command sed "s:^$HOME:\$HOME:")"
 
-    SOURCE_STR="\\nexport tms_DIR=\"${PROFILE_INSTALL_DIR}\"\\n[ -s \"\$tms_DIR/tms.sh\" ] && \\. \"\$tms_DIR/tms.sh\"  # This loads tms\\n"
+    SOURCE_STR="\\nexport TMS_DIR=\"${PROFILE_INSTALL_DIR}\"\\n[ -s \"\$TMS_DIR/tms.sh\" ] && \\. \"\$TMS_DIR/tms.sh\"  # This loads tms\\n"
 
     # shellcheck disable=SC2016
-    COMPLETION_STR='[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads tms bash_completion\n'
+    COMPLETION_STR='[ -s "$TMS_DIR/bash_completion" ] && \. "$TMS_DIR/bash_completion"  # This loads tms bash_completion\n'
     BASH_OR_ZSH=false
 
-    if [ -z "${tms_PROFILE-}" ] ; then
+    if [ -z "${TMS_PROFILE-}" ] ; then
       local TRIED_PROFILE
       if [ -n "${PROFILE}" ]; then
-        TRIED_PROFILE="${tms_PROFILE} (as defined in \$PROFILE), "
+        TRIED_PROFILE="${TMS_PROFILE} (as defined in \$PROFILE), "
       fi
       tms_echo "=> Profile not found. Tried ${TRIED_PROFILE-}~/.bashrc, ~/.bash_profile, ~/.zprofile, ~/.zshrc, and ~/.profile."
       tms_echo "=> Create one of them and run this script again"
@@ -210,24 +210,24 @@ tms_do_install() {
       command printf "${SOURCE_STR}"
       tms_echo
     else
-      if tms_profile_is_bash_or_zsh "${tms_PROFILE-}"; then
+      if tms_profile_is_bash_or_zsh "${TMS_PROFILE-}"; then
         BASH_OR_ZSH=true
       fi
-      if ! command grep -qc '/tms.sh' "$tms_PROFILE"; then
-        tms_echo "=> Appending tms source string to $tms_PROFILE"
-        command printf "${SOURCE_STR}" >> "$tms_PROFILE"
+      if ! command grep -qc '/tms.sh' "$TMS_PROFILE"; then
+        tms_echo "=> Appending tms source string to $TMS_PROFILE"
+        command printf "${SOURCE_STR}" >> "$TMS_PROFILE"
       else
-        tms_echo "=> tms source string already in ${tms_PROFILE}"
+        tms_echo "=> tms source string already in ${TMS_PROFILE}"
       fi
       # shellcheck disable=SC2016
-      if ${BASH_OR_ZSH} && ! command grep -qc '$NVM_DIR/bash_completion' "$tms_PROFILE"; then
-        tms_echo "=> Appending bash_completion source string to $tms_PROFILE"
-        command printf "$COMPLETION_STR" >> "$tms_PROFILE"
+      if ${BASH_OR_ZSH} && ! command grep -qc '$NVM_DIR/bash_completion' "$TMS_PROFILE"; then
+        tms_echo "=> Appending bash_completion source string to $TMS_PROFILE"
+        command printf "$COMPLETION_STR" >> "$TMS_PROFILE"
       else
-        tms_echo "=> bash_completion source string already in ${tms_PROFILE}"
+        tms_echo "=> bash_completion source string already in ${TMS_PROFILE}"
       fi
     fi
-    if ${BASH_OR_ZSH} && [ -z "${tms_PROFILE-}" ] ; then
+    if ${BASH_OR_ZSH} && [ -z "${TMS_PROFILE-}" ] ; then
       tms_echo "=> Please also append the following lines to the if you are using bash/zsh shell:"
       command printf "${COMPLETION_STR}"
     fi
