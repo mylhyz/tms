@@ -46,7 +46,7 @@ def get_template_list():
         for dir in dirs:
             if dir.startswith("."):
                 dirs.remove(dir)
-        return dirs
+        return sorted(dirs)
 
 
 def clone_template(dir, working):
