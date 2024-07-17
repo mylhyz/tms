@@ -137,6 +137,14 @@ install_tms_from_git() {
   fi
 
   # 检出远程仓库到本地目录
+  # Try to fetch tag
+  if command git --git-dir="$INSTALL_DIR"/.git --work-tree="$INSTALL_DIR" fetch origin tag "$TMS_VERSION" --depth=1 2>/dev/null; then
+    :
+  # Fetch given version
+  elif ! command git --git-dir="$INSTALL_DIR"/.git --work-tree="$INSTALL_DIR" fetch origin "$TMS_VERSION" --depth=1; then
+    nvm_echo >&2 "$fetch_error"
+    exit 1
+  fi
   command git -c advice.detachedHead=false --git-dir="$INSTALL_DIR"/.git --work-tree="$INSTALL_DIR" checkout -f --quiet main || {
     tms_echo >&2 "Failed to checkout the given version $TMS_VERSION. Please report this!"
     exit 2
