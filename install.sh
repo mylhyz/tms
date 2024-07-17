@@ -158,6 +158,12 @@ install_tms_from_git() {
     fi
   fi
 
+  # 使用 git pull --rebase 更新
+  command git --git-dir="$INSTALL_DIR"/.git --work-tree="$INSTALL_DIR" pull --rebase --quiet origin main || {
+    tms_echo >&2 "Failed to pull the given version $TMS_VERSION. Please report this!"
+    exit 2
+  }
+
   # 清理仓库
   tms_echo "=> Compressing and cleaning up git repository"
   if ! command git --git-dir="$INSTALL_DIR"/.git --work-tree="$INSTALL_DIR" reflog expire --expire=now --all; then
