@@ -18,7 +18,7 @@ def exec_command(cmd, cwd):
     )
     out, err = proc.communicate()
     if err:
-        print(err)
+        print(err.decode().strip())
     else:
         print(out.decode().strip())
 
