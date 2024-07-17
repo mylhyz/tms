@@ -2,15 +2,15 @@
 
 模板管理工具
 
-# 安装
+# 安装/更新
 
-通过 cURL 或者 Wget 安装
+通过 cURL 或者 Wget 安装/更新
 
 ```bash
 curl -o- https://raw.githubusercontent.com/mylhyz/tms/main/install.sh | bash
 ```
 
-```
+```bash
 wget -qO- https://raw.githubusercontent.com/mylhyz/tms/main/install.sh | bash
 ```
 
