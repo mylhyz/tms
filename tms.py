@@ -70,9 +70,8 @@ def init(args):
     else:
         working_dir = args.project_dir
         print("[TMS] 指定 project_dir => {}".format(working_dir))
-    if working_dir is None or not os.path.exists(working_dir):
-        print("[TMS] {} 不存在".format(working_dir))
-        return
+    if not os.path.exists(working_dir):
+        os.makedirs(working_dir)
     # 选择模板
     template_dir = os.path.join(get_template_repo_dir(), template_name)
     # 拷贝模板到指定目录下
