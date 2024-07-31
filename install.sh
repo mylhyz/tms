@@ -233,18 +233,7 @@ tms_do_install() {
       else
         tms_echo "=> tms source string already in ${TMS_PROFILE}"
       fi
-      # # shellcheck disable=SC2016
-      # if ${BASH_OR_ZSH} && ! command grep -qc '$NVM_DIR/bash_completion' "$TMS_PROFILE"; then
-      #   tms_echo "=> Appending bash_completion source string to $TMS_PROFILE"
-      #   command printf "$COMPLETION_STR" >> "$TMS_PROFILE"
-      # else
-      #   tms_echo "=> bash_completion source string already in ${TMS_PROFILE}"
-      # fi
     fi
-    # if ${BASH_OR_ZSH} && [ -z "${TMS_PROFILE-}" ] ; then
-    #   tms_echo "=> Please also append the following lines to the if you are using bash/zsh shell:"
-    #   command printf "${COMPLETION_STR}"
-    # fi
 
     # Source tms
     # shellcheck source=/dev/null
